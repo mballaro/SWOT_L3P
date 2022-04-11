@@ -1,8 +1,9 @@
+### :warning: WORK in progress. These are experimental tools. Please review & test the notebooks (further dev. are listed in notebooks TODOs)
+
+
 # SWOT L3p products
 
 <center><img src="./figures/image.png"/></center>
-
-
 
 ### Context
 
@@ -27,27 +28,34 @@ Geostrophic currents are derived from the approximation of the Navier-Stockes eq
 **_Formulation:_** 
 
 Following the [Lagerloef et al. (1999)](https://agupubs.onlinelibrary.wiley.com/doi/epdf/10.1029/1999JC900197) approach, the geostrophic currents calculation is:
+
 $$
 u_g(x,y) = - (1 - w_b(x,y)) \frac{g}{f(x,y)}\frac{\partial h(x,y)}{\partial y} -  w_b(x,y) \frac{g}{\beta}\frac{\partial^2 h}{\partial y^2}
 $$
+
 $$
 v_g(x,y) = (1 - w_b(x,y)) \frac{g}{f(x,y)}\frac{\partial h(x,y)}{\partial x} + w_b(x,y) \frac{g}{\beta}\frac{\partial^2 h}{\partial{y} \partial{x}}
 $$
+
 $$
 \vec{U_g} = u_g.\vec{x} + v_g.\vec{y} 
 $$
 
 with: 
-$$ w_b(x,y) = e^{-(\frac{latitude(x,y)}{2.2^{\circ}} )^2}, \textrm{the equatorial weight function} $$ 
-$$ f(x,y) = 2 \Omega sin(latitude(x,y)) , \textrm{the Coriolis frequency} $$ 
 
+$$
+w_b(x,y) = e^{-(\frac{latitude(x,y)}{2.2^{\circ}} )^2}, \textrm{the equatorial weight function} 
+$$
 
+$$
+f(x,y) = 2 \Omega sin(latitude(x,y)) , \textrm{the Coriolis frequency} 
+$$
 
 
 ### Approximation of the derivative
 
 As mentioned by Arbic: In the vast majority of oceanographic applications, geostrophic velocities are estimated from a “three-point stencil centered difference”, in which sea surface height values at adjacent grid points are differenced to determine velocities at a central grid point.
-The study of Abic et aL () suggest that wide stencil results are more reliable
+The study of Abic et al (XXXX) suggest that wide stencil results are more reliable
 
 *Note*:
 
