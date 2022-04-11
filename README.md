@@ -44,8 +44,8 @@ with:
 
 ### Approximation of the derivative
 
-As mentioned by Arbic: In the vast majority of oceanographic applications, geostrophic velocities are estimated from a “three-point stencil centered difference”, in which sea surface height values at adjacent grid points are differenced to determine velocities at a central grid point.
-The study of Abic et al (XXXX) suggest that wide stencil results are more reliable
+As mentioned by Arbic e al (XXXX): "In the vast majority of oceanographic applications, geostrophic velocities are estimated from a “three-point stencil centered difference”, in which sea surface height values at adjacent grid points are differenced to determine velocities at a central grid point."
+The study of Abic et al (XXXX) suggest that wide stencil results are more reliable.
 
 *Note*:
 
@@ -56,8 +56,7 @@ For a 3-points stencil width, the first and second derivatives discretisation sc
 <img src="https://render.githubusercontent.com/render/math?math={\color{white} \frac{\partial h(x,y)}{\partial x} = \frac{ h(i+1, j) - h(i-1, j) } {2 dx}  }#gh-dark-mode-only">
 
 
-“stencil width” we mean the number of grid points utilized to estimate the finite difference approximation to the derivative on a grid
+“stencil width” := the number of grid points used to estimate the finite difference approximation of the derivative on the grid
 
-varying the accuracy of the derivative estimate
 
 
