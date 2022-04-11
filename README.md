@@ -1,6 +1,5 @@
 ### :warning: WORK in progress. These are experimental tools. Please review & test the notebooks (further dev. are listed in notebooks TODOs)
 
-
 # SWOT L3p products
 
 <center><img src="./figures/image.png"/></center>
@@ -29,27 +28,18 @@ Geostrophic currents are derived from the approximation of the Navier-Stockes eq
 
 Following the [Lagerloef et al. (1999)](https://agupubs.onlinelibrary.wiley.com/doi/epdf/10.1029/1999JC900197) approach, the geostrophic currents calculation is:
 
-$$
-u_g(x,y) = - (1 - w_b(x,y)) \frac{g}{f(x,y)}\frac{\partial h(x,y)}{\partial y} -  w_b(x,y) \frac{g}{\beta}\frac{\partial^2 h}{\partial y^2}
-$$
 
-$$
-v_g(x,y) = (1 - w_b(x,y)) \frac{g}{f(x,y)}\frac{\partial h(x,y)}{\partial x} + w_b(x,y) \frac{g}{\beta}\frac{\partial^2 h}{\partial{y} \partial{x}}
-$$
+<img src="https://render.githubusercontent.com/render/math?math={\color{white} u_g(x,y) = - (1 - w_b(x,y)) \frac{g}{f(x,y)}\frac{\partial h(x,y)}{\partial y} -  w_b(x,y) \frac{g}{\beta}\frac{\partial^2 h}{\partial y^2}}#gh-dark-mode-only">
 
-$$
-\vec{U_g} = u_g.\vec{x} + v_g.\vec{y} 
-$$
+<img src="https://render.githubusercontent.com/render/math?math={\color{white} v_g(x,y) = (1 - w_b(x,y)) \frac{g}{f(x,y)}\frac{\partial h(x,y)}{\partial x} + w_b(x,y) \frac{g}{\beta}\frac{\partial^2 h}{\partial{y} \partial{x}} }#gh-dark-mode-only">
+
+<img src="https://render.githubusercontent.com/render/math?math={\color{white} \vec{U_g} = u_g.\vec{x} + v_g.\vec{y}  }#gh-dark-mode-only">
 
 with: 
 
-$$
-w_b(x,y) = e^{-(\frac{latitude(x,y)}{2.2^{\circ}} )^2}, \textrm{the equatorial weight function} 
-$$
+<img src="https://render.githubusercontent.com/render/math?math={\color{white} w_b(x,y) = e^{-(\frac{latitude(x,y)}{2.2^{\circ}} )^2}, \textrm{the equatorial weight function}   }#gh-dark-mode-only">
 
-$$
-f(x,y) = 2 \Omega sin(latitude(x,y)) , \textrm{the Coriolis frequency} 
-$$
+<img src="https://render.githubusercontent.com/render/math?math={\color{white}f(x,y) = 2 \Omega sin(latitude(x,y)) , \textrm{the Coriolis frequency}    }#gh-dark-mode-only">
 
 
 ### Approximation of the derivative
@@ -61,12 +51,10 @@ The study of Abic et al (XXXX) suggest that wide stencil results are more reliab
 
 For a 3-points stencil width, the first and second derivatives discretisation schemes are:
 
-$$
-\frac{\partial h(x,y)}{\partial y} = \frac{ h(i, j+1) - h(i, j-1) } {2 dy}
-$$
-$$
-\frac{\partial h(x,y)}{\partial x} = \frac{ h(i+1, j) - h(i-1, j) } {2 dx}
-$$
+<img src="https://render.githubusercontent.com/render/math?math={\color{white} \frac{\partial h(x,y)}{\partial y} = \frac{ h(i, j+1) - h(i, j-1) } {2 dy}  }#gh-dark-mode-only">
+
+<img src="https://render.githubusercontent.com/render/math?math={\color{white} \frac{\partial h(x,y)}{\partial x} = \frac{ h(i+1, j) - h(i-1, j) } {2 dx}  }#gh-dark-mode-only">
+
 
 “stencil width” we mean the number of grid points utilized to estimate the finite difference approximation to the derivative on a grid
 
