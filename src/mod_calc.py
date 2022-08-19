@@ -288,7 +288,6 @@ def semigeostrophic_lagerloef_velocity_stencil(ds, varname, weight_1st, weight_2
     # u_sg = -get_pass_sign(ds) * constants.g/beta * ds[varname].rolling(num_lines=npt, center=True, min_periods=int(0.5*npt)).reduce(weighted_2nd_sum) 
     # dh_dx = (ds[varname].rolling(num_pixels=npt, center=True, min_periods=int(0.5*npt)).reduce(weighted_1st_sum)) 
     # v_sg = get_pass_sign(ds) * constants.g/beta * (dh_dx.rolling(num_lines=npt, center=True, min_periods=int(0.5*npt)).reduce(weighted_1st_sum)) 
-    
     padded_u = -get_pass_sign(ds) * constants.g/beta * pad_data(ds[varname], 'num_pixels', npt).rolling(num_lines=npt, center=True, min_periods=int(0.5*npt)).reduce(weighted_2nd_sum) 
     u_sg = unpad_data(padded_u, 'num_pixels', npt)
     
@@ -418,10 +417,10 @@ def compute_vorticity(u, v, params, vorticity_type='relative'):
     # number of point of the rooling window
     npt = len(weight)
     
-    # Apply fiter on data
-    sigma = 2*int(npt/(2*numpy.pi))
     tmp_u = u.copy()
     tmp_v = v.copy()
+    # Apply fiter on data
+    # sigma = 2*int(npt/(2*numpy.pi))
     #tmp_u.values = gaussian_filter(u, sigma=(sigma, sigma))
     #tmp_v.values = gaussian_filter(v, sigma=(sigma, sigma))
     
@@ -469,10 +468,18 @@ def compute_vorticity_arbic(ds, params):
     # number of point of the rooling window
     npt = len(weight_1st_deriv)
     
+    # VERIFY PASS SIGN !!!!!!!!
+    
+    
     d2h_dy2 = -get_pass_sign(ds) *  ds['extrapolated_simulated_true_ssh_karin'].rolling(num_lines=npt, center=True, min_periods=int(0.5*npt)).reduce(weighted_sum_2nd)
     d2h_dx2 = get_pass_sign(ds) * ds['extrapolated_simulated_true_ssh_karin'].rolling(num_pixels=npt, center=True, min_periods=int(0.5*npt)).reduce(weighted_sum_2nd)
     
     dh_dy = -get_pass_sign(ds) * ds['extrapolated_simulated_true_ssh_karin'].rolling(num_lines=npt, center=True, min_periods=int(0.5*npt)).reduce(weighted_sum_1st)
+    
+#     d2h_dy2 = ds['extrapolated_simulated_true_ssh_karin'].rolling(num_lines=npt, center=True, min_periods=int(0.5*npt)).reduce(weighted_sum_2nd)
+#     d2h_dx2 = ds['extrapolated_simulated_true_ssh_karin'].rolling(num_pixels=npt, center=True, min_periods=int(0.5*npt)).reduce(weighted_sum_2nd)
+    
+#     dh_dy = ds['extrapolated_simulated_true_ssh_karin'].rolling(num_lines=npt, center=True, min_periods=int(0.5*npt)).reduce(weighted_sum_1st)
     
     ksi = constants.g/fc * ( d2h_dy2 + d2h_dx2 - beta/fc * dh_dy)
     
@@ -617,22 +624,56 @@ def generate_gaussian_eddy_shape(params):
 
     vlon2d, vlat2d = vlon_vlat(dy, y, eddy_center_lat, dx, x, eddy_center_lon)
     
-    ssh = amp * numpy.exp( -( ((x2d-center_x)/(2*eddy_radius_rx))**2 + ((y2d-center_y)/(2.0*eddy_radius_ry))**2 ) )
+#    ssh = amp * numpy.exp( -( ((x2d-center_x)/(2*eddy_radius_rx))**2 + ((y2d-center_y)/(2.0*eddy_radius_ry))**2 ) )
     
     fc = f_coriolis(vlat2d)
     
-    # theoretical geostrophic current
-    u_g_theoretical = - constants.g/fc * ssh  * ( -2*(y2d-center_y)/((2.0*eddy_radius_ry)**2) ) 
+#     # theoretical geostrophic current
+#     u_g_theoretical = - constants.g/fc * ssh  * ( -2*(y2d-center_y)/((2.0*eddy_radius_ry)**2) ) 
     
-    v_g_theoretical = constants.g/fc * ssh  * ( -2*(x2d-center_x)/((2.0*eddy_radius_rx)**2) ) 
+#     v_g_theoretical = constants.g/fc * ssh  * ( -2*(x2d-center_x)/((2.0*eddy_radius_rx)**2) ) 
 
-    # Compute theoretical vorticity derivée de dc Attention A REVOIR
-    dv_dx = - 2*constants.g/(fc *(2*eddy_radius_rx)**2) * ( ssh  * (-2*(x2d-center_x)**2/((2.0*eddy_radius_rx)**2)) + ssh )
+#     # Compute theoretical vorticity derivée de dc Attention A REVOIR
+#     dv_dx = - 2*constants.g/(fc *(2*eddy_radius_rx)**2) * ( ssh  * (-2*(x2d-center_x)**2/((2.0*eddy_radius_rx)**2)) + ssh )
     
-    du_dy =  2*constants.g/(fc * (2*eddy_radius_ry)**2) * ( ssh  * (-2*(y2d-center_y)**2/((2.0*eddy_radius_ry)**2))  + ssh )
+#     du_dy =  2*constants.g/(fc * (2*eddy_radius_ry)**2) * ( ssh  * (-2*(y2d-center_y)**2/((2.0*eddy_radius_ry)**2))  + ssh )
+    
+#     zeta_f = (dv_dx - du_dy)/fc
     
     
-    zeta_f = (dv_dx - du_dy)/fc
+    
+    # New
+    s_x = Symbol('s_x')
+    s_y = Symbol('s_y')
+    s_amp = Symbol('s_amp')
+    s_center_x = Symbol('s_center_x')
+    s_center_y = Symbol('s_center_y')
+    s_eddy_radius_rx = Symbol('s_eddy_radius_rx')
+    s_eddy_radius_ry = Symbol('s_eddy_radius_ry')
+    s_g = Symbol('s_g')
+    s_fc = Symbol('s_fc')
+
+    s_ssh = s_amp * exp( -( ((s_x-s_center_x)/(2.0*s_eddy_radius_rx))**2 + ((s_y-s_center_y)/(2.0*s_eddy_radius_ry))**2 ) )
+    s_vg = s_g/s_fc * s_ssh.diff(s_x)
+    s_ug = -s_g/s_fc * s_ssh.diff(s_y)
+    s_zeta_f = (s_vg.diff(s_x) - s_ug.diff(s_y))
+    
+    
+    ssh = s_ssh.subs([(s_amp, amp), (s_center_x, center_x), (s_center_y, center_y), (s_eddy_radius_rx, eddy_radius_rx), (s_eddy_radius_ry, eddy_radius_ry), (s_g, constants.g)])
+    ssh = lambdify([s_x, s_y, s_fc], ssh, "numpy")
+    ssh = ssh(x2d, y2d, fc)
+    
+    v_g_theoretical = s_vg.subs([(s_amp, amp), (s_center_x, center_x), (s_center_y, center_y), (s_eddy_radius_rx, eddy_radius_rx), (s_eddy_radius_ry, eddy_radius_ry), (s_g, constants.g)])
+    v_g_theoretical = lambdify([s_x, s_y, s_fc], v_g_theoretical, "numpy")
+    v_g_theoretical = v_g_theoretical(x2d, y2d, fc)
+    
+    u_g_theoretical = s_ug.subs([(s_amp, amp), (s_center_x, center_x), (s_center_y, center_y), (s_eddy_radius_rx, eddy_radius_rx), (s_eddy_radius_ry, eddy_radius_ry), (s_g, constants.g)])
+    u_g_theoretical = lambdify([s_x, s_y, s_fc], u_g_theoretical, "numpy")
+    u_g_theoretical = u_g_theoretical(x2d, y2d, fc)
+    
+    zeta_f = s_zeta_f.subs([(s_amp, amp), (s_center_x, center_x), (s_center_y, center_y), (s_eddy_radius_rx, eddy_radius_rx), (s_eddy_radius_ry, eddy_radius_ry), (s_g, constants.g)])
+    zeta_f = lambdify([s_x, s_y, s_fc], zeta_f, "numpy")
+    zeta_f = zeta_f(x2d, y2d, fc)/fc
     
     ### Ideal Eddy dataset
     da_ssh_theory = xr.DataArray(ssh, 
@@ -696,5 +737,6 @@ def generate_gaussian_eddy_shape(params):
 
     ds = xr.merge([da_ssh_theory, da_lon, da_lat, da_lonnadir, da_latnadir, da_ug_theory, da_vg_theory, da_zeta_f ])
     ds = ds.assign_coords({'longitude': ds.longitude, 'latitude': ds.latitude})
+    ds = ds.assign_coords({'longitude_nadir': ds.longitude_nadir, 'latitude_nadir': ds.latitude_nadir})
     
     return ds 

@@ -110,19 +110,35 @@ def plot_aviso_map_velocity(u_field, v_field):
 
 def plot_eddy(ds):
     
-    plt.figure(figsize=(20,15))
-    plt.subplot(221)
+    plt.figure(figsize=(15,20))
+    plt.subplot(321)
     ds['simulated_true_ssh_karin'].plot(x='longitude', y='latitude', cmap='jet')
     plt.title('Sea Surface Height')
     
-    plt.subplot(222)
+    plt.subplot(322, projection='3d')
+    ds['simulated_true_ssh_karin'].plot.surface(x='longitude', y='latitude', cmap='jet')
+    plt.title('Sea Surface Height')
+    
+    plt.subplot(323)
     (numpy.sqrt((ds['ug_theory']**2 + ds['vg_theory']**2))).plot(x='longitude', y='latitude', cmap='Blues_r')
     ds.isel(num_lines=slice(0, -1, 10), num_pixels=slice(0, -1, 10)).plot.quiver(x='longitude', y='latitude', u='ug_theory', v='vg_theory')
     plt.title('Geostrophic Currents')
-    #plt.colorbar()
     
-    plt.subplot(223)
+    plt.subplot(324, projection='3d')
+    (numpy.sqrt((ds['ug_theory']**2 + ds['vg_theory']**2))).plot.surface(x='longitude', y='latitude', cmap='Blues_r')
+    # ds.isel(num_lines=slice(0, -1, 10), num_pixels=slice(0, -1, 10)).plot.quiver(x='longitude', y='latitude', u='ug_theory', v='vg_theory')
+    plt.title('Geostrophic Currents')
+    
+    plt.subplot(325)
     ds['zeta_f'].plot(x='longitude', y='latitude', cmap='RdGy')
     plt.title('Normalized Relative Vorticity')
+    
+    plt.subplot(326, projection='3d')
+    ds['zeta_f'].plot.surface(x='longitude', y='latitude', cmap='RdGy')
+    plt.title('Normalized Relative Vorticity')
+
+
+
+
 
 
